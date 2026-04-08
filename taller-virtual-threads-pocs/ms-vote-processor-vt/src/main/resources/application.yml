@@ -1,0 +1,53 @@
+application:
+  kafka-values:
+    topic: votes-topic
+    bootstrap-servers: PLAINTEXT://localhost:19092
+    schema:
+      registry:
+        url: http://localhost:8081
+        auto-register: false
+        use-latest-version: true
+    consumer:
+      group-id: votes-topic-cg01
+      client-id: votes-topic-client
+      max-poll-records: 500
+      avro:
+        reader: true
+      auto:
+        offset:
+          reset: earliest
+      enable:
+        auto:
+          commit: false
+  internal-values:
+    retries: 3
+    semaphore:
+      permits: 40
+
+quarkus:
+  package:
+    jar:
+      enabled: true
+  http:
+    port: 8101
+  console:
+    color: true
+  devservices:
+    enabled: false
+  kafka:
+    devservices:
+      enabled: false
+  datasource:
+    db-kind: postgresql
+    username: postgres
+    password: pgpass321
+    jdbc:
+      url: jdbc:postgresql://localhost:15432/db_votes
+      max-size: ${application.internal-values.semaphore.permits}
+      acquisition-timeout: 10
+  hibernate-orm:
+    log:
+      sql: false
+      format-sql: false
+    database:
+      generation: none

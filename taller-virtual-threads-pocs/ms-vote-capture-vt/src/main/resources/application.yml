@@ -1,0 +1,23 @@
+application:
+  kafka-values:
+    topic: votes-topic
+    bootstrap-servers: PLAINTEXT://localhost:19092
+    schema:
+      registry:
+        url: http://localhost:8081
+        auto-register: false
+        use-latest-version: true
+
+quarkus:
+  package:
+    jar:
+      enabled: true
+  http:
+    port: 8001
+  console:
+    color: true
+  devservices:
+    enabled: false
+  kafka:
+    devservices:
+      enabled: false

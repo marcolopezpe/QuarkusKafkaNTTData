@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Or>
+            <!-- Excluir carpeta de clases autogeneradas del schema avro -->
+            <Package name="pe.marcolopez.apps.avro" />
+        </Or>
+    </Match>
+</FindBugsFilter>

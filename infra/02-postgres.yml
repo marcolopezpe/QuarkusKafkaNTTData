@@ -1,0 +1,22 @@
+services:
+  pg-votes:
+    image: bitnami/postgresql:latest
+    container_name: pg-votes
+    restart: unless-stopped
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_DB: db_votes
+      POSTGRES_PASSWORD: pgpass321
+      TZ: America/Lima
+      PGTZ: America/Lima
+    volumes:
+      - /Users/marcolopez/Workspace/volumes/votes-net/pg-votes:/var/lib/postgresql/data
+      - ./scripts/pg_votes_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: votes-net

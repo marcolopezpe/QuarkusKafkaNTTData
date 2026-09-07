@@ -14,6 +14,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.jboss.logging.Logger;
 import pe.marcolopez.apps.avro.VoteEvent;
+import pe.marcolopez.apps.health.KafkaConsumerHealthState;
 import pe.marcolopez.apps.service.VoteProcessorService;
 import pe.marcolopez.apps.util.InternalValues;
 import pe.marcolopez.apps.util.KafkaValues;
@@ -59,6 +60,9 @@ public class VoteKafkaServiceConsumer {
   @Inject
   VoteProcessorService voteProcessorService;
 
+  @Inject
+  KafkaConsumerHealthState healthState;
+
   volatile boolean running = true;
 
   /**
@@ -74,6 +78,7 @@ public class VoteKafkaServiceConsumer {
       while (running) {
         try {
           var records = consumer.poll(Duration.ofMillis(200));
+          healthState.pollSuccess();
           if (!records.isEmpty()) {
             records.forEach(
                 record ->
@@ -83,6 +88,7 @@ public class VoteKafkaServiceConsumer {
             consumer.commitAsync();
           }
         } catch (Exception ex) {
+          healthState.pollFailure(ex);
           LOGGER.error("❌ Error en el polling de Kafka", ex);
         }
       }
